@@ -1,7 +1,6 @@
 package ast;
-import token.TokenInit;
-
 import java.util.ArrayList;
+import token.TokenInit;
 
 public class astt {
 
@@ -18,48 +17,6 @@ public class astt {
         void statementNode();
     }
 
-    public class Program implements  Node {
-        ArrayList <Statement> statements;
-        @Override
-        public String tokenLiteral() {
-            if (!statements.isEmpty()) {
-                return statements.get(0).tokenLiteral();
-            }
-            return "";
-        }
-        @Override
-        public String String() {
-            if (!statements.isEmpty()) {
-                return statements.get(0).String();
-            }
-            return "";
-        }
-    }
-
-    public class Identifier {
-        TokenInit token;
-        String name; 
-    }
-
-    public class letStatement implements Statement {
-        TokenInit token;
-        Identifier Identifier;
-        Expression Value;
-        @Override
-        public String tokenLiteral() {
-            return token.toString();
-        }
-        @Override
-        public String String() {
-            return "let " + Identifier.name + " = " + Value.String();
-        }
-
-        public void statementNode() {
-
-        }
-
-    }
-
     public class returnStatement implements Statement {
         TokenInit token;
         Expression Value;
@@ -72,7 +29,7 @@ public class astt {
         public String String() {
             return "return " + Value.String();
         }
-
+        @Override
         public void statementNode() {
 
         }
@@ -98,7 +55,7 @@ public class astt {
             }
             return "";
         }
-
+        @Override
         public void statementNode() {
 
         }
@@ -116,7 +73,7 @@ public class astt {
         public String String() {
             return Expression.String();
         }
-
+        @Override
         public void statementNode() {
 
         }
@@ -134,7 +91,7 @@ public class astt {
         public String String() {
             return Integer.toString(Value);
         }
-
+        @Override
         public void expressionNode() {
 
         }
@@ -152,7 +109,7 @@ public class astt {
         public String String() {
             return Value;
         }
-
+        @Override
         public void expressionNode() {
 
         }
@@ -170,7 +127,7 @@ public class astt {
         public String String() {
             return Boolean.toString(Value);
         }
-
+        @Override
         public void expressionNode() {
 
         }
@@ -191,6 +148,7 @@ public class astt {
             return operator + " " + rightExp.String();
         }
 
+        @Override
         public void expressionNode() {
 
         }
@@ -211,7 +169,7 @@ public class astt {
         public String String() {
             return leftExp.String() + " " + operator + " " + rightExp.String();
         }
-
+        @Override
         public void expressionNode() {
 
         }
@@ -230,14 +188,13 @@ public class astt {
         @Override
         public String String() {
             String out = "fn( ";
-            ArrayList <String> paramsList = new ArrayList<>();
             for (int i = 0; i < params.size(); i++) {
                 out += params.get(i).name + ", ";
             }
             out += ")" + " { " + body.String() + " }";
             return out;
         }
-
+        @Override
         public void expressionNode() {
 
         }
@@ -255,16 +212,44 @@ public class astt {
         @Override
         public String String() {
             String out = "";
-            ArrayList <String> params = new ArrayList<>();
+            
             for (int i = 0; i < params.size(); i++) {
                 out += params.get(i) + ", ";
             }
             return function.String() + "(" + out + ")";
         }
 
+        @Override
         public void expressionNode() {
 
         }
-    }
+    }  
 
+    public class ifExpression implements Expression {
+        TokenInit token;
+        Expression condition;
+        BlockStatements ifExcution;
+        BlockStatements elseExcution;
+
+        @Override
+        public void expressionNode() {
+
+        }
+
+        @Override
+        public String String() {
+            String out = "if ( " + condition.String() + " ) { " + ifExcution.String() + " }";
+            if(elseExcution != null) {
+                String elsee = " else { " + elseExcution.String() + " }";
+                return out + elsee;
+            }
+            return out;
+        }
+        @Override
+        public String tokenLiteral() {
+            return token.toString();
+        }
+
+    }
 }
+

@@ -35,7 +35,7 @@ public class Tokens {
     public static String COMMA = ",";
     public static String QUOTES = "\"";
     public static String ILEGAL = "ILEGAL";
-    public static String EOF = "/";
+    public static String EOF = "EOF";
 
     public static Map<String, String>hashMap;
 

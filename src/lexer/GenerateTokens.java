@@ -6,27 +6,31 @@ import token.Tokens;
 
 public class GenerateTokens {
     LexerInit lexer;
-    ArrayList<TokenInit> tokensList = new ArrayList<>();
     ArrayList<TokenInit> List;
-    public GenerateTokens(LexerInit lexer) {
+    public GenerateTokens(String input) {
+        LexerInit lexer = new LexerInit(input);
         this.lexer = lexer;
         this.List = new ArrayList<>();
         this.List = GenerateList(lexer);
+    }
+
+    public ArrayList<TokenInit> returnList() {
+        return List;
     }
 
     public ArrayList<TokenInit> GenerateList(LexerInit lexer) {
         while(lexer.curChar != 0) {
             TokenInit tok = readToken(lexer);
             if (tok != null) {
-                tokensList.add(tok);
+                List.add(tok);
             }
             lexer.nextChar();
             
         }
 
         TokenInit eof = new TokenInit("EOF", "0");
-        tokensList.add(eof);
-        return tokensList;
+        List.add(eof);
+        return List;
     }
 
     public TokenInit readToken(LexerInit lexer) {
@@ -161,11 +165,11 @@ public class GenerateTokens {
         TokenInit tok = new TokenInit(type, lit);
         return tok;
     }
-
     public static void main(String[] args) {
-        String input = " heelooo ";
-        LexerInit lexer = new LexerInit(input);
-        GenerateTokens tokens = new GenerateTokens(lexer);
+        String input = " heelooo from the other side   ";
+        
+        GenerateTokens tokens = new GenerateTokens(input);
+        
         for (int i = 0; i < tokens.List.size(); i++) {
             TokenInit tok = tokens.List.get(i);
             System.out.println(tok.tokString);
