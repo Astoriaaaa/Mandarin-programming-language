@@ -1,12 +1,13 @@
 package ast;
-import token.TokenInit;
+import token.*;
 
-public class Identifier implements  astt.Expression{
-    String name; 
+public class nullExpression implements astt.Expression {
     TokenInit token;
-    public Identifier(TokenInit token, String name) {
+    String Value;
+
+    public nullExpression(TokenInit token, String Value) {
         this.token = token;
-        this.name = name;
+        this.Value = Value;
     }
 
     @Override
@@ -15,7 +16,7 @@ public class Identifier implements  astt.Expression{
     }
     @Override
     public String String() {
-        String out = String.format("{token: %s, Value: %s}", token.tokString, name);
+        String out = String.format("{token: %s, Value: %s}", token.tokLiteral, "null");
         return out;
     }
     @Override
@@ -23,4 +24,3 @@ public class Identifier implements  astt.Expression{
 
     }
 }
-

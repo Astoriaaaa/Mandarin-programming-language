@@ -18,7 +18,7 @@ public class prefixExpression implements astt.Expression {
     }
     @Override
     public String String() {
-        String out = String.format("{token: %s, prefixOperator: %s, rightExp}", token.tokLiteral, prefixOperator, rightExp.String());
+        String out = String.format("{token: %s, prefixOperator: %s, rightExp: %s}", token.tokLiteral, prefixOperator, rightExp.String());
         return out;
     }
     @Override

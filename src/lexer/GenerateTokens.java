@@ -133,7 +133,7 @@ public class GenerateTokens {
         } else {
             lexer.nextChar();
             int start = lexer.curPos;
-            while(lexer.curChar != '"' || lexer.curChar != 0) {
+            while(lexer.curChar != '"' && lexer.curChar != 0) {
                 lexer.nextChar();
             }
             if (lexer.curChar == 0) {
@@ -154,7 +154,7 @@ public class GenerateTokens {
             lexer.nextChar();
         }
         lit = lexer.input.substring(start, lexer.curPos + 1);
-        if (peakChar(lexer) != 0 && (int) peakChar(lexer) != ' ') {
+        if (peakChar(lexer) != 0 && (int) peakChar(lexer) != ' ' && peakChar(lexer) != ';' && peakChar(lexer) != ')' && peakChar(lexer) != '}') {
             type = Tokens.ILEGAL;
             lexer.nextChar();
             lit = lexer.input.substring(start, lexer.curPos + 1);
@@ -166,7 +166,7 @@ public class GenerateTokens {
         return tok;
     }
     public static void main(String[] args) {
-        String input = " heelooo from the other side   ";
+        String input = "if (null) {return 5}";
         
         GenerateTokens tokens = new GenerateTokens(input);
         

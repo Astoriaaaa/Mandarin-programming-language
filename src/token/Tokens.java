@@ -14,6 +14,11 @@ public class Tokens {
     public static String FALSE = "FALSE";
     public static String INT = "INT";
     public static String STRING = "STRING";
+    public static String IF = "IF";
+    public static String ELSE = "ELSE";
+    public static String ELSEIF = "ELSEIF";
+    public static String ENDIF = "ENDIF";
+
 
     public static String PLUS = "+";
     public static String MINUS = "-";
@@ -36,6 +41,7 @@ public class Tokens {
     public static String QUOTES = "\"";
     public static String ILEGAL = "ILEGAL";
     public static String EOF = "EOF";
+    public static String NULL = "NULL";
 
     public static Map<String, String>hashMap;
 
@@ -46,6 +52,11 @@ public class Tokens {
         hashMap.put(FN, "fn");
         hashMap.put(TRUE, "true");
         hashMap.put(FALSE, "false");
+        hashMap.put(NULL, "null");
+        hashMap.put(IF, "if");
+        hashMap.put(ELSE, "else");
+        hashMap.put(ELSEIF, "elseif");
+        hashMap.put(ENDIF, "endif");
     }
 
     public static boolean isToken(String val) {
