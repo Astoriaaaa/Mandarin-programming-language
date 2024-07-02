@@ -4,6 +4,7 @@ import ast.Identifier;
 import ast.Program;
 import ast.astt;
 import ast.blockStatements;
+import ast.boolLiteral;
 import ast.expressionStatement;
 import ast.ifExpression;
 import ast.infixExpression;
@@ -59,12 +60,18 @@ public class GenerateAST {
             this.prefixMap.put(Tokens.NULL, this :: parseNullExpression);
             this.prefixMap.put(Tokens.STRING, this :: parseStringExpression);
             this.prefixMap.put(Tokens.IF, this :: parseIfExpression);
+            this.prefixMap.put(Tokens.TRUE, this :: parseBoolLiteral);
+            this.prefixMap.put(Tokens.FALSE, this :: parseBoolLiteral);
 
             this.infixMap.put(Tokens.PLUS, this :: parseInfixExp);
             this.infixMap.put(Tokens.MUL, this:: parseInfixExp);
             this.infixMap.put(Tokens.MINUS, this:: parseInfixExp);
 
 
+        }
+
+        public ast.boolLiteral parseBoolLiteral(ParserInit p) {
+            return new boolLiteral(p.curtok, p.curtok.tokLiteral);
         }
 
         public ast.ifExpression parseElseExpression(ParserInit p) {
@@ -327,7 +334,7 @@ public class GenerateAST {
     }
 
     public static void main(String[] args) {
-        GenerateAST ast = new GenerateAST("if (3) {return 5} endif; 0392oiwjd");
+        GenerateAST ast = new GenerateAST("(3 + 36) * 6 + 7");
     }
 
 }

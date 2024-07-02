@@ -91,7 +91,18 @@ public class GenerateTokens {
             lit = ">";
         } else if (Character.isDigit(lexer.curChar)) {
             type = Tokens.INT;
-            lit = Character.toString(lexer.curChar);
+            int pos = lexer.curPos;
+            while(Character.isDigit(peakChar(lexer))) {
+                lexer.nextChar();
+            }
+            if(Character.isAlphabetic(peakChar(lexer))) {
+                while(Character.isAlphabetic(peakChar(lexer)) || Character.isDigit(peakChar(lexer))) {
+                    type = Tokens.ILEGAL;
+                    lexer.nextChar();
+                }
+            }
+            
+            lit = lexer.input.substring(pos, lexer.curPos + 1);
         } else if (Character.isLetter(lexer.curChar)) {
             return readIdent(lexer);
         }
@@ -153,20 +164,21 @@ public class GenerateTokens {
         while(Character.isLetter(peakChar(lexer)) && lexer.curChar != 0) {
             lexer.nextChar();
         }
-        lit = lexer.input.substring(start, lexer.curPos + 1);
-        if (peakChar(lexer) != 0 && (int) peakChar(lexer) != ' ' && peakChar(lexer) != ';' && peakChar(lexer) != ')' && peakChar(lexer) != '}') {
-            type = Tokens.ILEGAL;
-            lexer.nextChar();
-            lit = lexer.input.substring(start, lexer.curPos + 1);
+        if(Character.isDigit(peakChar(lexer))){
+            while (Character.isDigit(peakChar(lexer)) || Character.isAlphabetic((peakChar(lexer)))) {
+                type = Tokens.ILEGAL;
+                lexer.nextChar();
+            }
         }
-        else if(Tokens.isToken(lit)) {
+        lit = lexer.input.substring(start, lexer.curPos + 1);
+        if(Tokens.isToken(lit)) {
             type = Tokens.identType(lit);
         }
         TokenInit tok = new TokenInit(type, lit);
         return tok;
     }
     public static void main(String[] args) {
-        String input = "if (null) {return 5}";
+        String input = "1hello1hello";
         
         GenerateTokens tokens = new GenerateTokens(input);
         
