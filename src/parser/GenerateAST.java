@@ -2,10 +2,14 @@ package parser;
 
 import ast.Identifier;
 import ast.Program;
+import ast.arrayCallExpression;
+import ast.arrayExpression;
 import ast.astt;
 import ast.blockStatements;
 import ast.boolLiteral;
+import ast.callExpression;
 import ast.expressionStatement;
+import ast.fnExpression;
 import ast.ifExpression;
 import ast.infixExpression;
 import ast.integerLiteral;
@@ -49,6 +53,7 @@ public class GenerateAST {
             this.predcedences.put(Tokens.MINUS, 5);
             this.predcedences.put(Tokens.NEQ, 5);
             this.predcedences.put(Tokens.LB, 6);
+            this.predcedences.put(Tokens.LS, 6);
             
 
 
@@ -62,10 +67,137 @@ public class GenerateAST {
             this.prefixMap.put(Tokens.IF, this :: parseIfExpression);
             this.prefixMap.put(Tokens.TRUE, this :: parseBoolLiteral);
             this.prefixMap.put(Tokens.FALSE, this :: parseBoolLiteral);
+            this.prefixMap.put(Tokens.FN, this :: parseFnExpression);
+            this.prefixMap.put(Tokens.LS, this :: parseArrayExpression);
 
             this.infixMap.put(Tokens.PLUS, this :: parseInfixExp);
             this.infixMap.put(Tokens.MUL, this:: parseInfixExp);
             this.infixMap.put(Tokens.MINUS, this:: parseInfixExp);
+            this.infixMap.put(Tokens.LB, this :: parseFnCall);
+            this.infixMap.put(Tokens.LS, this :: parseArrayCallExpression);
+
+        }
+
+        public ast.arrayCallExpression parseArrayCallExpression(ParserInit p, astt.Expression leftExp) {
+            TokenInit tok = p.curtok;
+            astt.Expression array = leftExp;
+            p.nextToken();
+            if(p.curtok.tokType == Tokens.RS) {
+                p.errors.add("Expected EXPRESSION GOT NULL");
+                return null;
+            }
+            astt.Expression index = parseExpression(p, pred("LOWEST"));
+            if (!peakExpect(p, Tokens.RS)) {
+                return null;
+            }
+            return new arrayCallExpression(tok, array, index);
+        }
+
+
+
+        public ast.arrayExpression parseArrayExpression(ParserInit p) {
+            TokenInit tok = p.curtok;
+            ArrayList<astt.Expression> exps = new ArrayList<>();
+            
+            if (p.peaktok.tokType != Tokens.RS) {
+                p.nextToken();
+                astt.Expression exp = parseExpression(p, pred("LOWEST"));
+                if(exp == null) {
+                    return null;
+                }
+                exps.add(exp);
+                while(p.peaktok.tokType == Tokens.COMMA) {
+                    p.nextToken();
+                    p.nextToken();
+                    astt.Expression expp = parseExpression(p, pred("LOWEST"));
+                    if(exp == null) {
+                        return null;
+                    }
+                    exps.add(expp);
+                }
+            }
+
+            if (!peakExpect(p, Tokens.RS)) {
+                return null;
+            }
+
+            ast.arrayExpression arrExp = new arrayExpression(tok, exps);
+            return arrExp;
+            
+        }
+
+        public ast.callExpression parseFnCall(ParserInit p, astt.Expression leftExp) {
+            TokenInit tok = p.curtok;
+            astt.Expression function = leftExp;
+            ArrayList<astt.Expression> idents = new ArrayList<>();
+
+            if (p.peaktok.tokType != Tokens.RB) {
+                p.nextToken();
+                astt.Expression exp = parseExpression(p, pred("LOWEST"));
+                if(exp == null) {
+                    return null;
+                }
+                idents.add(exp);
+                while(p.peaktok.tokType == Tokens.COMMA) {
+                    p.nextToken();
+                    p.nextToken();
+                    astt.Expression expp = parseExpression(p, pred("LOWEST"));
+                    if(exp == null) {
+                        return null;
+                    }
+                    idents.add(expp);
+                }
+            }
+
+
+            if(!peakExpect(p, Tokens.RB)) {
+                return null;
+            }
+
+            ast.callExpression callExp = new callExpression(tok, function, idents);
+            return callExp;
+
+        }
+
+        public ast.fnExpression parseFnExpression(ParserInit p) {
+            TokenInit tok = p.curtok;
+            if(!peakExpect(p, Tokens.LB)) {
+                return null;
+            }
+            
+            ArrayList<ast.Identifier> idents = new ArrayList<>();
+            
+            if (p.peaktok.tokType == Tokens.IDENTIFIER) {
+                p.nextToken();
+                idents.add(parseIdentifier(p));
+                
+            } else if( p.peaktok.tokType != Tokens.RB) {
+                p.errors.add("Expected: " + Tokens.RB + " Got: " + p.curtok.tokType);
+                return null;
+            }
+           
+            while(p.peaktok.tokType == Tokens.COMMA) {
+                p.nextToken();
+                p.nextToken();
+                if (p.curtok.tokType != Tokens.IDENTIFIER) {
+                    p.errors.add("Expected: " + Tokens.IDENTIFIER + " Got: " + p.curtok.tokType);
+                    return null;
+                }
+                idents.add(parseIdentifier(p));
+            }
+
+            if(!peakExpect(p, Tokens.RB)) {
+                return null;
+            }
+
+            if(!peakExpect(p, Tokens.LP)) {
+                return null;
+            }
+
+            ast.blockStatements stmts = parseBlockStatements(p);
+
+            fnExpression fn = new fnExpression(tok, idents, stmts);
+            return fn;
 
 
         }
@@ -334,7 +466,7 @@ public class GenerateAST {
     }
 
     public static void main(String[] args) {
-        GenerateAST ast = new GenerateAST("(3 + 36) * 6 + 7");
+        GenerateAST ast = new GenerateAST("[1, 2, 3][0");
     }
 
 }

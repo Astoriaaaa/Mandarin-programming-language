@@ -54,6 +54,12 @@ public class GenerateTokens {
         } else if (lexer.curChar == ')') {
             type = Tokens.RB;
             lit = ")";
+        } else if (lexer.curChar == '[') {
+            type = Tokens.LS;
+            lit = "[";
+        } else if (lexer.curChar == ']') {
+            type = Tokens.RS;
+            lit = "]";
         } else if (lexer.curChar == '{') {
             type = Tokens.LP;
             lit = "{";
@@ -178,7 +184,7 @@ public class GenerateTokens {
         return tok;
     }
     public static void main(String[] args) {
-        String input = "1hello1hello";
+        String input = "[1, 2, 3]";
         
         GenerateTokens tokens = new GenerateTokens(input);
         

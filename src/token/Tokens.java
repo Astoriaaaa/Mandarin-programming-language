@@ -36,6 +36,8 @@ public class Tokens {
     public static String RB = ")";
     public static String LP = "{";
     public static String RP = "}";
+    public static String LS = "[";
+    public static String RS = "]";
     public static String SEMICOLON = ";";
     public static String COMMA = ",";
     public static String QUOTES = "\"";

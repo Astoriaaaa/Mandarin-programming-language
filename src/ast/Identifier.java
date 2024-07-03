@@ -9,6 +9,10 @@ public class Identifier implements  astt.Expression{
         this.name = name;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     @Override
     public String tokenLiteral() {
         return token.toString();
