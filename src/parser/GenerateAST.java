@@ -75,6 +75,10 @@ public class GenerateAST {
             this.infixMap.put(Tokens.MINUS, this:: parseInfixExp);
             this.infixMap.put(Tokens.LB, this :: parseFnCall);
             this.infixMap.put(Tokens.LS, this :: parseArrayCallExpression);
+            this.infixMap.put(Tokens.GT, this :: parseInfixExp);
+            this.infixMap.put(Tokens.EQ, this :: parseInfixExp);
+            this.infixMap.put(Tokens.NEQ, this :: parseInfixExp);
+            this.infixMap.put(Tokens.LT, this :: parseInfixExp);
 
         }
 
@@ -469,7 +473,7 @@ public class GenerateAST {
     }
 
     public static void main(String[] args) {
-        GenerateAST ast = new GenerateAST("[1, 2, 3][0");
+        GenerateAST ast = new GenerateAST("9 != 6");
     }
 
 }

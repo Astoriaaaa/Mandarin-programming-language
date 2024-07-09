@@ -3,12 +3,12 @@ import token.TokenInit;
 
 public class infixExpression implements astt.Expression {
     TokenInit token;
-    String prefixOperator;
+    String infixOperator;
     astt.Expression rightExp, leftExp;
 
-    public infixExpression(TokenInit token, String prefixOperator, astt.Expression rightExp, astt.Expression leftExp) {
+    public infixExpression(TokenInit token, String infixOperator, astt.Expression rightExp, astt.Expression leftExp) {
         this.token = token;
-        this.prefixOperator = prefixOperator;
+        this.infixOperator = infixOperator;
         this.rightExp = rightExp;
         this.leftExp = leftExp;
     }
@@ -19,11 +19,24 @@ public class infixExpression implements astt.Expression {
     }
     @Override
     public String String() {
-        String out = String.format("{token: %s, infixOperator: %s, rightExp: %s, leftExp: %s}", token.tokLiteral, prefixOperator, rightExp.String(), leftExp.String());
+        String out = String.format("{token: %s, infixOperator: %s, rightExp: %s, leftExp: %s}", token.tokLiteral, infixOperator, rightExp.String(), leftExp.String());
         return out;
     }
     @Override
     public void expressionNode() {
 
     }
+
+    public astt.Expression getRightExp() {
+        return this.rightExp;
+    }
+
+    public astt.Expression getLeftExp() {
+        return this.leftExp;
+    }
+
+    public String getOperator() {
+        return this.infixOperator;
+    }
+
 }

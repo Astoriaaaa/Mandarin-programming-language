@@ -45,9 +45,6 @@ public class GenerateTokens {
         } else if (lexer.curChar == '-') {
             type = Tokens.MINUS;
             lit = "-";
-        } else if (lexer.curChar == '!') {
-            type = Tokens.EXCLAIM;
-            lit = "!";
         } else if (lexer.curChar == '*') {
             type = Tokens.MUL;
             lit = "*";
@@ -187,7 +184,7 @@ public class GenerateTokens {
         return tok;
     }
     public static void main(String[] args) {
-        String input = "!false";
+        String input = "!=";
         
         GenerateTokens tokens = new GenerateTokens(input);
         
