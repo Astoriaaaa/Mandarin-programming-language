@@ -24,6 +24,7 @@ public class Tokens {
     public static String MINUS = "-";
     public static String ASSIGN = "=";
     public static String MUL = "*";
+    public static String EXCLAIM = "!";
 
     public static String GT = ">";
     public static String LT = "<";

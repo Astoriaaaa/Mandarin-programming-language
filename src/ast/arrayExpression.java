@@ -1,7 +1,5 @@
 package ast;
-import com.sun.source.tree.AssertTree;
 import java.util.ArrayList;
-import java.util.HashMap;
 import token.*;
 
 
@@ -28,7 +26,7 @@ public class arrayExpression implements  astt.Expression{
         for(int i = 0; i < array.size() - 1; i++) {
             p += array.get(i).String();
         }
-        if(array.size() > 0) {
+        if(!array.isEmpty()) {
             p += array.get(array.size() - 1).String();
         }
         p += "]";

@@ -26,6 +26,14 @@ public class prefixExpression implements astt.Expression {
 
     }
 
+    public String getOperator() {
+        return this.prefixOperator;
+    }
+
+    public astt.Expression getRightExp() {
+        return this.rightExp;
+    }
+
     
 }
 

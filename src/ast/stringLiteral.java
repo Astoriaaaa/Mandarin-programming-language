@@ -23,5 +23,9 @@ public class stringLiteral implements astt.Expression {
     public void expressionNode() {
 
     }
+
+    public String getValue() {
+        return Value;
+    }
 }
 

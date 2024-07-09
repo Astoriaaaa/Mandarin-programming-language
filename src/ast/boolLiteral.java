@@ -25,5 +25,9 @@ public class boolLiteral implements astt.Expression {
 
     }
 
+    public String getValue() {
+        return Value;
+    }
+
 }
 

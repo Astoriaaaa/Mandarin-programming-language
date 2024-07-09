@@ -24,5 +24,9 @@ public class integerLiteral implements astt.Expression {
 
     }
 
+    public int getValue() {
+        return this.Value;
+    }
+
 }
 

@@ -10,6 +10,10 @@ public class expressionStatement implements astt.Statement {
         this.Expression = exp;
     }
 
+    public astt.Expression getExpression() {
+        return Expression;
+    }
+
     @Override
     public String tokenLiteral() {
         return token.toString();

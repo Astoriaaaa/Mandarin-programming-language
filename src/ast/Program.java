@@ -26,5 +26,9 @@ public class Program implements  astt.Node {
         }
         return out;
     }
+
+    public ArrayList <astt.Statement> getStatements() {
+        return this.statements;
+    }
 }
 
