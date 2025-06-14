@@ -48,4 +48,15 @@ public class ifExpression implements astt.Expression {
         return token.tokString;
     }
 
+    public astt.Expression getCondition() {
+        return this.condition;
+    }
+
+    public blockStatements getBlockStatements() {
+        return this.ifExcution;
+    }
+
+    public ifExpression getNextIfExpression() {
+        return this.elseExcution;
+    }
 }

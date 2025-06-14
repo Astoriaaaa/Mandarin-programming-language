@@ -16,7 +16,7 @@ public class integerLiteral implements astt.Expression {
     }
     @Override
     public String String() {
-        String out = "{token: " + token.tokLiteral + ", Value: " + Integer.toString(Value) + "}";
+        String out = "{token: " + token.tokString + ", Value: " + Integer.toString(Value) + "}";
         return out;
     }
     @Override

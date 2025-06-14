@@ -2,16 +2,17 @@ package object;
 
 public class objNull implements  objInterface{
 
-    String value;
 
     public objNull(String value) {
-        this.value = value;
+        
     }
 
+    @Override
     public String Type() {
         return "NULL";
     }
 
+    @Override
     public String Inspect() {
         return "null";
     }

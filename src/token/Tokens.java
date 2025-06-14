@@ -6,60 +6,60 @@ import java.util.Map;
 
 public class Tokens {
     public static String Tokentype;
-    public static String LET = "LET";
-    public static String RETURN = "RETURN";
-    public static String FN = "FUNCTION";
-    public static String IDENTIFIER = "IDENTIFIER";
-    public static String TRUE = "TRUE";
-    public static String FALSE = "FALSE";
-    public static String INT = "INT";
-    public static String STRING = "STRING";
-    public static String IF = "IF";
-    public static String ELSE = "ELSE";
-    public static String ELSEIF = "ELSEIF";
-    public static String ENDIF = "ENDIF";
+    final public static String LET = "LET";
+    final public static String RETURN = "RETURN";
+    final public static String FN = "FUNCTION";
+    final public static String IDENTIFIER = "IDENTIFIER";
+    final public static String TRUE = "TRUE";
+    final public static String FALSE = "FALSE";
+    final public static String INT = "INT";
+    final public static String STRING = "STRING";
+    final public static String IF = "IF";
+    final public static String ELSE = "ELSE";
+    final public static String ELSEIF = "ELSEIF";
+    final public static String ENDIF = "ENDIF";
 
 
-    public static String PLUS = "+";
-    public static String MINUS = "-";
-    public static String ASSIGN = "=";
-    public static String MUL = "*";
-    public static String EXCLAIM = "!";
+    final public static String PLUS = "+";
+    final public static String MINUS = "-";
+    final public static String ASSIGN = "=";
+    final public static String MUL = "*";
+    final public static String EXCLAIM = "!";
 
-    public static String GT = ">";
-    public static String LT = "<";
-    public static String GTE = ">=";
-    public static String LTE = "<=";
-    public static String EQ = "==";
-    public static String NEQ = "!=";
+    final public static String GT = ">";
+    final public static String LT = "<";
+    final public static String GTE = ">=";
+    final public static String LTE = "<=";
+    final public static String EQ = "==";
+    final public static String NEQ = "!=";
 
-    public static String LB = "(";
-    public static String RB = ")";
-    public static String LP = "{";
-    public static String RP = "}";
-    public static String LS = "[";
-    public static String RS = "]";
-    public static String SEMICOLON = ";";
-    public static String COMMA = ",";
-    public static String QUOTES = "\"";
-    public static String ILEGAL = "ILEGAL";
-    public static String EOF = "EOF";
-    public static String NULL = "NULL";
+    final public static String LB = "(";
+    final public static String RB = ")";
+    final public static String LP = "{";
+    final public static String RP = "}";
+    final public static String LS = "[";
+    final public static String RS = "]";
+    final public static String SEMICOLON = ";";
+    final public static String COMMA = ",";
+    final public static String QUOTES = "\"";
+    final public static String ILEGAL = "ILEGAL";
+    final public static String EOF = "EOF";
+    final public static String NULL = "NULL";
 
     public static Map<String, String>hashMap;
 
     static {
         hashMap = new HashMap<>();
-        hashMap.put(LET, "let");
-        hashMap.put(RETURN, "return");
-        hashMap.put(FN, "fn");
-        hashMap.put(TRUE, "true");
-        hashMap.put(FALSE, "false");
-        hashMap.put(NULL, "null");
-        hashMap.put(IF, "if");
-        hashMap.put(ELSE, "else");
-        hashMap.put(ELSEIF, "elseif");
-        hashMap.put(ENDIF, "endif");
+        hashMap.put(LET, "设"); 
+        hashMap.put(RETURN, "返回");
+        hashMap.put(FN, "功能");
+        hashMap.put(TRUE, "真的");
+        hashMap.put(FALSE, "错误的");
+        hashMap.put(NULL, "无效的");
+        hashMap.put(IF, "如果");
+        hashMap.put(ELSE, "或者");
+        hashMap.put(ELSEIF, "否则");
+        hashMap.put(ENDIF, "结尾");
     }
 
     public static boolean isToken(String val) {

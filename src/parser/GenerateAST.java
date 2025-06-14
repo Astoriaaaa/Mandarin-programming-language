@@ -1,23 +1,6 @@
 package parser;
 
-import ast.Identifier;
-import ast.Program;
-import ast.arrayCallExpression;
-import ast.arrayExpression;
-import ast.astt;
-import ast.blockStatements;
-import ast.boolLiteral;
-import ast.callExpression;
-import ast.expressionStatement;
-import ast.fnExpression;
-import ast.ifExpression;
-import ast.infixExpression;
-import ast.integerLiteral;
-import ast.letStatement;
-import ast.nullExpression;
-import ast.prefixExpression;
-import ast.returnStatement;
-import ast.stringLiteral;
+import ast.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lexer.GenerateTokens;
@@ -35,6 +18,10 @@ public class GenerateAST {
         HashMap<String, prefixParse> prefixMap = new HashMap<>();
         HashMap<String, infixParse> infixMap = new HashMap<>();
         HashMap<String, Integer> predcedences = new HashMap<>();
+
+        public ArrayList<String> getErrors() {
+            return this.errors;
+        }
     
         public ParserInit(ArrayList<TokenInit> aT) {
             this.arrToken = aT;
@@ -49,8 +36,8 @@ public class GenerateAST {
             this.predcedences.put(Tokens.GT, 2);
             this.predcedences.put(Tokens.LT, 2);
             this.predcedences.put(Tokens.PLUS, 3);
-            this.predcedences.put(Tokens.MUL, 4);
-            this.predcedences.put(Tokens.MINUS, 5);
+            this.predcedences.put(Tokens.MINUS, 4);
+            this.predcedences.put(Tokens.MUL, 5);
             this.predcedences.put(Tokens.NEQ, 5);
             this.predcedences.put(Tokens.LB, 6);
             this.predcedences.put(Tokens.LS, 6);
@@ -83,8 +70,13 @@ public class GenerateAST {
         }
 
         public ast.arrayCallExpression parseArrayCallExpression(ParserInit p, astt.Expression leftExp) {
+            System.out.println("parseArrayCallExpression");
             TokenInit tok = p.curtok;
             astt.Expression array = leftExp;
+            if (!(array instanceof Identifier)) {
+                p.errors.add("Expected: IDENTIFIER, Got: " + tok.tokLiteral);
+                return null;
+            }
             p.nextToken();
             if(p.curtok.tokType == Tokens.RS) {
                 p.errors.add("Expected EXPRESSION GOT NULL");
@@ -94,10 +86,12 @@ public class GenerateAST {
             if (!peakExpect(p, Tokens.RS)) {
                 return null;
             }
-            return new arrayCallExpression(tok, array, index);
+            Identifier ident = (Identifier) array;
+            return new arrayCallExpression(tok, ident, index);
         }
 
         public ast.arrayExpression parseArrayExpression(ParserInit p) {
+            System.out.println("parseArrayExpression");
             TokenInit tok = p.curtok;
             ArrayList<astt.Expression> exps = new ArrayList<>();
             
@@ -129,11 +123,12 @@ public class GenerateAST {
         }
 
         public ast.callExpression parseFnCall(ParserInit p, astt.Expression leftExp) {
+            System.out.println("parseFnCall");
             TokenInit tok = p.curtok;
             astt.Expression function = leftExp;
             ArrayList<astt.Expression> idents = new ArrayList<>();
-
-            if (p.peaktok.tokType.equals(Tokens.RB)) {
+            
+            if (p.curtok.tokType == Tokens.LB) {
                 p.nextToken();
                 astt.Expression exp = parseExpression(p, pred("LOWEST"));
                 if(exp == null) {
@@ -153,6 +148,7 @@ public class GenerateAST {
 
 
             if(!peakExpect(p, Tokens.RB)) {
+                p.errors.add("Expected token: ) GOT: " + p.curtok.tokType);
                 return null;
             }
 
@@ -162,13 +158,13 @@ public class GenerateAST {
         }
 
         public ast.fnExpression parseFnExpression(ParserInit p) {
+            System.out.println("parseFnExpression");
             TokenInit tok = p.curtok;
             if(!peakExpect(p, Tokens.LB)) {
                 return null;
             }
             
             ArrayList<ast.Identifier> idents = new ArrayList<>();
-            
             if (p.peaktok.tokType == Tokens.IDENTIFIER) {
                 p.nextToken();
                 idents.add(parseIdentifier(p));
@@ -197,7 +193,6 @@ public class GenerateAST {
             }
 
             ast.blockStatements stmts = parseBlockStatements(p);
-
             fnExpression fn = new fnExpression(tok, idents, stmts);
             return fn;
 
@@ -205,30 +200,42 @@ public class GenerateAST {
         }
 
         public ast.boolLiteral parseBoolLiteral(ParserInit p) {
+            System.out.println("parseBoolLiteral");
             return new boolLiteral(p.curtok, p.curtok.tokLiteral);
         }
 
         public ast.ifExpression parseElseExpression(ParserInit p) {
-            if(p.curtok.tokType == Tokens.ENDIF) {
+            System.out.println("parseElseExpression");
+
+            if(p.peaktok.tokType == Tokens.ENDIF) {
+                System.out.println("endiffffffff");
+                p.nextToken();
                 return null;
-            } else if (p.curtok.tokType != Tokens.ELSEIF && p.curtok.tokType != Tokens.ELSE) {
-                p.errors.add("Expected token: " + Tokens.ENDIF + " Got: " + p.curtok.tokType);
+            } else if (p.peaktok.tokType != Tokens.ELSEIF && p.peaktok.tokType != Tokens.ELSE) {
+                p.errors.add("Expected token: " + Tokens.ENDIF + " Got: " + p.peaktok.tokType);
                 return null;
             } 
+            p.nextToken();
             return parseIfExpression(p);
         }
 
         public ast.blockStatements parseBlockStatements(ParserInit p) {
+            System.out.println("parseBlockStatements");
+
             TokenInit tok = p.curtok;
             p.nextToken();
             ArrayList <astt.Statement> stmts = new ArrayList<>();
+            
             while(p.curtok.tokType != Tokens.RP) {
                 astt.Statement stmt = parseStatement(p);
+
                 if(stmt == null) {
                     return null;
                 }
                 stmts.add(stmt);
                 p.nextToken();
+                
+
             }
             ast.Program program = new Program(stmts);
             ast.blockStatements bstmts = new blockStatements(tok, program);
@@ -236,9 +243,13 @@ public class GenerateAST {
         }
 
         public ast.ifExpression parseIfExpression(ParserInit p) {
+            System.out.println("parseIfExpression");
+
             TokenInit tok = p.curtok;
             astt.Expression condition = null;
             ifExpression elseExcution;
+
+            System.out.println(tok.tokLiteral + " parse if");
 
             if(p.curtok.tokType != Tokens.ELSE) {
                 if(!peakExpect(p, Tokens.LB)) {
@@ -263,25 +274,34 @@ public class GenerateAST {
                 return null;
             }
 
+            System.out.println(p.curtok.tokLiteral + " block stmt");
             ast.blockStatements stmts = parseBlockStatements(p);
+
             if (stmts == null) {
                 return null;
             }
-            p.nextToken();
+
             
+            System.out.println(p.curtok.tokType +  " parse else");
             elseExcution = parseElseExpression(p);
 
-            if(p.curtok.tokType != Tokens.ENDIF || p.peaktok.tokType == Tokens.SEMICOLON) {
-                p.nextToken();
+            if (elseExcution == null && p.curtok.tokType != Tokens.ENDIF) {
+                return null;
             }
+
+            // if(p.curtok.tokType != Tokens.ENDIF || p.peaktok.tokType == Tokens.SEMICOLON) {
+            //     p.nextToken();
+            // }
             
             
             ifExpression exp = new ifExpression(tok, condition, stmts, elseExcution);
+            System.out.println("doneeee " + p.curtok.tokType);
             return exp;
 
         }
 
         public ast.stringLiteral parseStringExpression(ParserInit p) {
+            System.out.println("parseStringExpression");
 
             TokenInit tok = p.curtok;
             String Value = p.curtok.tokLiteral;
@@ -290,14 +310,17 @@ public class GenerateAST {
         }
 
         public ast.Identifier parseIdentifier(ParserInit p) {
+            System.out.println("parseIdentifier");
             return new Identifier(p.curtok, p.curtok.tokLiteral);
         }
 
         public ast.nullExpression parseNullExpression(ParserInit p) {
+            System.out.println("parseNullExpression");
             return new nullExpression(p.curtok, "null");
         }
 
         public ast.integerLiteral parseIntegerLiteral(ParserInit p) {
+            System.out.println("parseIntegerLiteral");
             int num = Integer.parseInt(p.curtok.tokLiteral);
             TokenInit tok = p.curtok;
             ast.integerLiteral exp = new integerLiteral(tok, num);
@@ -305,6 +328,7 @@ public class GenerateAST {
         }
 
         public ast.prefixExpression parsePrefixExp(ParserInit p) {
+            System.out.println("parsePrefixExp");
             String operator = p.curtok.tokLiteral;
             TokenInit tok = p.curtok;
             p.nextToken();
@@ -314,6 +338,7 @@ public class GenerateAST {
         }
 
         public ast.infixExpression parseInfixExp(ParserInit p, astt.Expression leftExp) {
+            System.out.println("parseInfixExp");
             String operator = p.curtok.tokLiteral;
             TokenInit tok = p.curtok;
             p.nextToken();
@@ -323,6 +348,7 @@ public class GenerateAST {
         }
 
         public astt.Expression parseGroupExpression(ParserInit p) {
+            System.out.println("parseGroupExpression");
             p.nextToken();
             astt.Expression exp = parseExpression(p, pred("LOWEST"));
             if (p.peaktok.tokType == token.Tokens.RB) {
@@ -333,6 +359,7 @@ public class GenerateAST {
         }
 
         public int pred(String tok) {
+            System.out.println("pred");
             if (this.predcedences.containsKey(tok)) {
                 return this.predcedences.get(tok);
             }
@@ -340,10 +367,12 @@ public class GenerateAST {
         }
 
         public prefixParse getPrefix(String tok) {
+            System.out.println("getPrefix");
             return this.prefixMap.get(tok);
         }
 
         public infixParse getInfix(String tok) {
+            System.out.println("getInfix");
             return this.infixMap.get(tok);
         }
 
@@ -357,6 +386,7 @@ public class GenerateAST {
     }
 
     ast.Program program;
+    ArrayList<String> errors;
 
     public GenerateAST(String input) {
         GenerateTokens gt = new GenerateTokens(input);
@@ -364,14 +394,18 @@ public class GenerateAST {
         ParserInit p = new ParserInit(arrTokens);
         ArrayList <astt.Statement> statements = parseProgram(p);
         this.program = new ast.Program(statements);
+        this.errors = p.getErrors();
         // if(p.errors.isEmpty()) {
-        //     System.out.println(program.String());
+        //     System.out.println(program.String()); //chnage program.String() function
         // } else {
-        //     while(!p.errors.isEmpty()) {
-        //         System.out.println(p.errors.get(0));
-        //         p.errors.remove(0);
+        //     for(int i = 0; i < p.errors.size(); i++) {
+        //         System.out.println(p.errors.get(i));
         //     }
         // }
+    }
+
+    public ArrayList<String> getErrors() {
+        return this.errors;
     }
 
     public ast.Program getParsedProgram() {
@@ -379,6 +413,7 @@ public class GenerateAST {
     }
 
     public ArrayList <astt.Statement> parseProgram(ParserInit p) {
+        System.out.println("parseProgram");
         ArrayList <astt.Statement> statements = new ArrayList<>();
         while(p.curtok.tokType != Tokens.EOF && p.errors.isEmpty()) {
             statements.add(parseStatement(p));
@@ -388,6 +423,7 @@ public class GenerateAST {
     } 
 
     public astt.Statement parseStatement(ParserInit p) {
+        System.out.println("parseStatement");
         ArrayList <astt.Statement> statements = new ArrayList<>();
         if(p.curtok.tokType == Tokens.LET) {
             return parseLetStatement(p);
@@ -401,6 +437,7 @@ public class GenerateAST {
     }
 
     public ast.letStatement parseLetStatement(ParserInit p) {
+        System.out.println("parseLetStatement");
         ast.Identifier ident = null;
         token.TokenInit tok = p.curtok;
         
@@ -415,6 +452,7 @@ public class GenerateAST {
     }
 
     public ast.returnStatement parseReturnStatement(ParserInit p) {
+        System.out.println("parseReturnStatement");
         TokenInit tok = p.curtok;
         p.nextToken();
         ast.expressionStatement exp;
@@ -430,6 +468,7 @@ public class GenerateAST {
     }
 
     public ast.expressionStatement parseExpressionStatement(ParserInit p) {
+        System.out.println("parseExpressionStatement");
         TokenInit tok = p.curtok;
         astt.Expression exp = parseExpression(p, 0);
         ast.expressionStatement stmt = new expressionStatement(tok, exp);
@@ -442,6 +481,7 @@ public class GenerateAST {
     }
 
     public astt.Expression parseExpression(ParserInit p, int precedence) {
+        System.out.println("parseExpression");
         prefixParse prefix = p.getPrefix(p.curtok.tokType);
         if (prefix == null) {
             p.errors.add("Invalid prefix " + p.curtok.tokType);
@@ -463,6 +503,7 @@ public class GenerateAST {
     } 
 
     public Boolean peakExpect(ParserInit p, String expect) {
+        System.out.println("peakExpect");
         if(p.peaktok.tokType != expect) {
             p.errors.add("Expected token: " + expect + " Got: " + p.peaktok.tokType);
             p.nextToken();
@@ -473,7 +514,9 @@ public class GenerateAST {
     }
 
     public static void main(String[] args) {
-        GenerateAST ast = new GenerateAST("9 != 6");
+        //String input = "设 a = 四十五; 如果 (a ==  四十五) {返回  四十五 * 五} 结尾;";
+        String input = "设 a = 四十五; 四十五 + 四十五;  ";
+        GenerateAST ast = new GenerateAST(input);
     }
 
 }

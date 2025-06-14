@@ -10,6 +10,11 @@ public class returnStatement implements astt.Statement {
         this.Value = Value;
     }
 
+    public ast.expressionStatement getExpression() {
+        return this.Value;
+    }
+
+
     @Override
     public String tokenLiteral() {
         return token.toString();

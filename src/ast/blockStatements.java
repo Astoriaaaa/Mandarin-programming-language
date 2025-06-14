@@ -23,5 +23,9 @@ public class blockStatements implements astt.Statement {
     public void statementNode() {
 
     }
+
+    public Program getStatements() {
+        return this.statements;
+    }
 }
 

@@ -3,10 +3,10 @@ import token.*;
 
 public class arrayCallExpression implements astt.Expression {
     TokenInit token;
-    astt.Expression array;
+    Identifier array;
     astt.Expression index;
 
-    public arrayCallExpression(TokenInit token, astt.Expression array, astt.Expression index) {
+    public arrayCallExpression(TokenInit token, Identifier array, astt.Expression index) {
         this.token = token;
         this.array = array;
         this.index = index;
@@ -25,5 +25,12 @@ public class arrayCallExpression implements astt.Expression {
     @Override
     public void expressionNode() {
 
+    }
+    public Identifier getIdent() {
+        return this.array;
+    }
+
+    public astt.Expression getIndex() {
+        return this.index;
     }
 } 

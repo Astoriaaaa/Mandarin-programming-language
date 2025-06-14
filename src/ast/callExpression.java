@@ -20,14 +20,12 @@ public class callExpression implements astt.Expression {
     @Override
     public String String() {
         String p = "[";
-        System.out.println(p);
-        for (int i = 0; i < params.size() - 1; i++) {
+        for (int i = 0; i < params.size(); i++) {
             p += params.get(i).String() + ", ";
         }
-        if(params.size() > 1) {
-            p += params.get(params.size() - 1).String();
-        }
-        p += "]";
+        p = p.substring(0, p.length() - 2);
+       
+        p += ']';
         String out = String.format("{token: %s, function: %s, params: %s}", token.tokString, function.String(), p);
         return out;
     }
@@ -35,6 +33,14 @@ public class callExpression implements astt.Expression {
     @Override
     public void expressionNode() {
 
+    }
+
+    public astt.Expression getFunction() {
+        return this.function;
+    }
+
+    public ArrayList<astt.Expression> getParams() {
+        return this.params;
     }
 }  
 

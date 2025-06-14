@@ -7,10 +7,12 @@ public class objString implements objInterface{
         this.value = value;
     }
 
+    @Override
     public String Type() {
         return "STRING";
     }
 
+    @Override
     public String Inspect() {
         return value;
     }

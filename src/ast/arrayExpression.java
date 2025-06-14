@@ -3,13 +3,19 @@ import java.util.ArrayList;
 import token.*;
 
 
-public class arrayExpression implements  astt.Expression{
+public class arrayExpression implements  astt.Expression {
     TokenInit token;
+    int length;
     ArrayList<astt.Expression> array = new ArrayList<>();
 
     public arrayExpression(TokenInit token, ArrayList<astt.Expression> array) {
         this.token = token;
         this.array = array;
+        this.length = array.size();
+    }
+
+    public int getLen() {
+        return this.length;
     }
 
     public astt.Expression getIndex(int index) {

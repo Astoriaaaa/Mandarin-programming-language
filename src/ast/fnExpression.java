@@ -20,12 +20,10 @@ public class fnExpression implements astt.Expression {
     @Override
     public String String() {
         String p = "[";
-        for (int i = 0; i < params.size() - 1; i++) {
+        for (int i = 0; i < params.size(); i++) {
             p += params.get(i).String() + ", ";
         }
-        if(params.size() > 1) {
-            p += params.get(params.size() - 1).String();
-        }
+        p = p.substring(0, p.length() - 2);
        
         p += ']';
         String out = String.format("{token: %s, params: %s, body: %s}", this.token.tokString, p, this.body.String());
@@ -34,5 +32,13 @@ public class fnExpression implements astt.Expression {
     @Override
     public void expressionNode() {
 
+    }
+
+    public ArrayList <Identifier> getParams() {
+        return this.params;
+    }
+
+    public blockStatements getBody() {
+        return this.body;
     }
 }

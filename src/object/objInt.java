@@ -7,10 +7,12 @@ public class objInt implements objInterface {
     }
 
 
+    @Override
     public String Type() {
         return "INT";
     }
 
+    @Override
     public String Inspect() {
         return Integer.toString(value);
     }

@@ -1,6 +1,8 @@
 package lexer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import token.TokenInit;
 import token.Tokens;
 
@@ -8,8 +10,8 @@ public class GenerateTokens {
     LexerInit lexer;
     ArrayList<TokenInit> List;
     public GenerateTokens(String input) {
-        LexerInit lexer = new LexerInit(input);
-        this.lexer = lexer;
+        LexerInit lexerr = new LexerInit(input);
+        this.lexer = lexerr;
         this.List = new ArrayList<>();
         this.List = GenerateList(lexer);
     }
@@ -31,6 +33,33 @@ public class GenerateTokens {
         TokenInit eof = new TokenInit("EOF", "0");
         List.add(eof);
         return List;
+    }
+
+    public Boolean isMandInt(char num) {
+        char[] ints = {'〇', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'};
+        Character[] characterArray = new Character[ints.length];
+        for (int i = 0; i < ints.length; i++) {
+            characterArray[i] = ints[i];
+        }
+
+        List<Character> list = Arrays.asList(characterArray);
+
+        return list.contains(num);
+    }
+
+    public int convertMandarin(String num) {
+        String ints[] = {"〇", "一","二", "三", "四","五", "六", "七","八","九","十"};
+        List<String> list = new ArrayList<>(Arrays.asList(ints));
+        if(num.length() == 1) {
+            return list.indexOf(num);
+        } else if (num.length() == 2 && num.charAt(0) == '十') {
+            return 10 + convertMandarin(num.substring(1));
+        } else if(num.length() == 2) {
+            return 10 * convertMandarin(num.substring(0, 1));
+        } else if(num.length() == 3) {
+            return 10 * convertMandarin(num.substring(0, 1)) + convertMandarin(num.substring(2));
+        }
+        return -1;
     }
 
     public TokenInit readToken(LexerInit lexer) {
@@ -95,20 +124,21 @@ public class GenerateTokens {
         } else if (lexer.curChar == '>') {
             type = Tokens.GT;
             lit = ">";
-        } else if (Character.isDigit(lexer.curChar)) {
+        } else if (isMandInt(lexer.curChar)) {
             type = Tokens.INT;
             int pos = lexer.curPos;
-            while(Character.isDigit(peakChar(lexer))) {
+            while(isMandInt(peakChar(lexer))) {
                 lexer.nextChar();
             }
-            if(Character.isAlphabetic(peakChar(lexer))) {
-                while(Character.isAlphabetic(peakChar(lexer)) || Character.isDigit(peakChar(lexer))) {
-                    type = Tokens.ILEGAL;
-                    lexer.nextChar();
-                }
+            while(Character.isAlphabetic(peakChar(lexer)) || Character.isDigit(peakChar(lexer))) {
+                type = Tokens.ILEGAL;
+                lexer.nextChar();
             }
-            
-            lit = lexer.input.substring(pos, lexer.curPos + 1);
+            int englishNum = convertMandarin(lexer.input.substring(pos, lexer.curPos + 1));
+            if (englishNum == -1) {
+                type = Tokens.ILEGAL;
+            }
+            lit = Integer.toString(englishNum);
         } else if (Character.isLetter(lexer.curChar)) {
             return readIdent(lexer);
         }
@@ -122,17 +152,13 @@ public class GenerateTokens {
     }
 
     public void skipSpaces(LexerInit lexer) {
-        if(lexer.curPos != 0) {
-            System.out.println("invoked after " + lexer.input.charAt(lexer.curPos - 1));
-        }
+        
         char c = lexer.curChar;
-        int count = 0;
         while(c == ' ') {
             lexer.nextChar();
             c = lexer.curChar;
-            count += 1;
         }
-        System.out.println(count);
+        
     }
 
     public char peakChar(LexerInit lexer) {
@@ -170,11 +196,10 @@ public class GenerateTokens {
         while(Character.isLetter(peakChar(lexer)) && lexer.curChar != 0) {
             lexer.nextChar();
         }
-        if(Character.isDigit(peakChar(lexer))){
-            while (Character.isDigit(peakChar(lexer)) || Character.isAlphabetic((peakChar(lexer)))) {
-                type = Tokens.ILEGAL;
-                lexer.nextChar();
-            }
+
+        while (Character.isDigit(peakChar(lexer)) || Character.isLetter(peakChar(lexer)) || isMandInt(peakChar(lexer))) {
+            type = Tokens.ILEGAL;
+            lexer.nextChar();
         }
         lit = lexer.input.substring(start, lexer.curPos + 1);
         if(Tokens.isToken(lit)) {
@@ -184,13 +209,13 @@ public class GenerateTokens {
         return tok;
     }
     public static void main(String[] args) {
-        String input = "!=";
+        String input = "设 func = 功能(a, b) {返回 a + b}; func(四, 五) + func(四, 五`);";
         
         GenerateTokens tokens = new GenerateTokens(input);
         
         for (int i = 0; i < tokens.List.size(); i++) {
             TokenInit tok = tokens.List.get(i);
-            System.out.println(tok.tokString);
+            System.err.println(tok.tokString);
         }
         
     }

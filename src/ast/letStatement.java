@@ -18,12 +18,20 @@ public class letStatement implements astt.Statement {
     }
     @Override
     public String String() {
-        String out = String.format("{token: %s, Identifer: %s, Value: %s}", token.tokLiteral, Identifier.name, Value.String());
+        String out = String.format("{token: %s, Identifer: %s, Value: %s}", token.tokString, Identifier.String(), Value.String());
         return out;
     }
     @Override
     public void statementNode() {
 
+    }
+
+    public Identifier getIdent() {
+        return this.Identifier;
+    }
+
+    public expressionStatement getExp() {
+        return this.Value;
     }
 
 }

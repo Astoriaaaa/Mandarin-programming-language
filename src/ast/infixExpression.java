@@ -19,7 +19,7 @@ public class infixExpression implements astt.Expression {
     }
     @Override
     public String String() {
-        String out = String.format("{token: %s, infixOperator: %s, rightExp: %s, leftExp: %s}", token.tokLiteral, infixOperator, rightExp.String(), leftExp.String());
+        String out = String.format("{token: %s, infixOperator: %s, rightExp: %s, leftExp: %s}", token.tokString, infixOperator, rightExp.String(), leftExp.String());
         return out;
     }
     @Override

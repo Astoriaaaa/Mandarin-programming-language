@@ -7,10 +7,12 @@ public class objBool implements objInterface{
         this.value = value;
     }
 
+    @Override
     public String Type() {
         return "BOOLEAN";
     }
 
+    @Override
     public String Inspect() {
         return value;
     }
